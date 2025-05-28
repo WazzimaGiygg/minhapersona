@@ -6,7 +6,135 @@
     <title>Regras para Moderadores da Página WZZM</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        /* Insira o código CSS aqui */
+        /* Define estilos globais para o corpo da página */
+body {
+    font-family: 'Roboto', sans-serif; /* Aplica a fonte Roboto */
+    line-height: 1.6; /* Espaçamento entre linhas para melhor legibilidade */
+    color: #333; /* Cor de texto padrão, um cinza escuro */
+    margin: 40px auto; /* Margem superior e inferior, e centraliza o conteúdo */
+    max-width: 900px; /* Largura máxima do conteúdo para evitar linhas muito longas */
+    padding: 0 20px; /* Preenchimento nas laterais para telas menores */
+    background-color: #f9f9f9; /* Fundo cinza bem claro para a página */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05); /* Sombra suave para destacar o conteúdo */
+    border-radius: 10px; /* Cantos arredondados para o corpo principal */
+}
+
+/* Estilos para o título principal (h2) */
+h2 {
+    font-size: 2.5em; /* Tamanho da fonte maior para o título */
+    color: #2c3e50; /* Cor azul escuro para o título */
+    text-align: center; /* Centraliza o título */
+    margin-bottom: 30px; /* Espaçamento abaixo do título */
+    padding-bottom: 15px; /* Preenchimento inferior para a linha */
+    border-bottom: 4px solid #3498db; /* Linha azul vibrante abaixo do título */
+    letter-spacing: 0.08em; /* Espaçamento entre letras para o título */
+    text-transform: uppercase; /* Transforma o texto do título em maiúsculas */
+    position: relative; /* Necessário para o pseudo-elemento */
+}
+
+/* Pseudo-elemento para um detalhe visual abaixo do h2 */
+h2::after {
+    content: '';
+    display: block;
+    width: 80px; /* Largura do detalhe */
+    height: 4px; /* Altura do detalhe */
+    background-color: #e74c3c; /* Cor de destaque (vermelho) */
+    position: absolute;
+    bottom: -2px; /* Posição abaixo da linha */
+    left: 50%; /* Centraliza horizontalmente */
+    transform: translateX(-50%); /* Ajuste final para centralização */
+    border-radius: 2px; /* Cantos arredondados para o detalhe */
+}
+
+/* Estilos para os subtítulos (h3) */
+h3 {
+    font-size: 1.8em; /* Tamanho da fonte para subtítulos */
+    color: #34495e; /* Um cinza azulado mais escuro para subtítulos */
+    margin-top: 50px; /* Espaçamento superior para separar seções */
+    margin-bottom: 20px; /* Espaçamento inferior para subtítulos */
+    border-left: 6px solid #2980b9; /* Uma barra vertical à esquerda */
+    padding-left: 20px; /* Espaçamento entre a barra e o texto */
+    background-color: #ecf0f1; /* Fundo suave para os subtítulos */
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius: 5px; /* Cantos arredondados */
+}
+
+/* Estilos para parágrafos */
+p {
+    margin-bottom: 1.2em; /* Espaçamento entre parágrafos */
+    text-align: justify; /* Justifica o texto para uma aparência mais formal */
+}
+
+/* Estilos para listas não ordenadas (ul) */
+ul {
+    list-style-type: none; /* Remove os marcadores de lista padrão */
+    padding-left: 0; /* Remove o preenchimento padrão da lista */
+    margin-bottom: 30px; /* Espaçamento abaixo das listas */
+}
+
+/* Estilos para cada item da lista (li) */
+ul li {
+    background-color: #ffffff; /* Fundo branco para cada item da lista */
+    margin-bottom: 12px; /* Espaçamento entre os itens da lista */
+    padding: 18px 25px; /* Preenchimento interno dos itens */
+    border-radius: 8px; /* Cantos arredondados */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Sombra mais pronunciada */
+    border-left: 5px solid #5cb85c; /* Uma barra verde suave à esquerda para itens de lista */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Transição suave para hover */
+}
+
+/* Efeito de hover para os itens da lista */
+ul li:hover {
+    transform: translateY(-5px); /* Efeito de "levantar" mais acentuado */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Sombra mais forte no hover */
+}
+
+/* Estilos para texto em negrito (strong) */
+strong {
+    color: #3498db; /* Cor azul vibrante para o texto em negrito */
+    font-weight: 700; /* Define a espessura da fonte para negrito */
+}
+
+/* Estilos para a linha horizontal (hr) */
+hr {
+    border: none; /* Remove a borda padrão */
+    border-top: 3px dashed #ccc; /* Uma linha pontilhada cinza clara */
+    margin: 60px 0; /* Espaçamento superior e inferior para a linha horizontal */
+}
+
+/* Responsividade: Ajustes para telas menores (smartphones) */
+@media (max-width: 768px) {
+    body {
+        margin: 20px auto;
+        padding: 0 15px;
+    }
+
+    h2 {
+        font-size: 1.8em; /* Reduz o tamanho do título */
+        letter-spacing: 0.05em;
+    }
+
+    h3 {
+        font-size: 1.4em; /* Reduz o tamanho dos subtítulos */
+        margin-top: 30px;
+    }
+
+    ul li {
+        padding: 15px 20px; /* Ajusta o preenchimento dos itens da lista */
+    }
+}
+
+/* Responsividade: Ajustes para telas muito pequenas (mobile landscape) */
+@media (max-width: 480px) {
+    h2 {
+        font-size: 1.5em;
+    }
+
+    h3 {
+        font-size: 1.2em;
+    }
+}
     </style>
 </head>
 <body>
@@ -52,3 +180,66 @@
             <p data-start="2702" data-end="2938"><strong data-start="2702" data-end="2734">Remo&ccedil;&atilde;o de Conte&uacute;do Indevido</strong>: O moderador deve remover <strong data-start="2761" data-end="2793">conte&uacute;do que viole as regras</strong> da WZZM, como ataques pessoais, discurso de &oacute;dio, desinforma&ccedil;&atilde;o ou spam, sempre justificando a remo&ccedil;&atilde;o e informando ao usu&aacute;rio de forma educada.</p>
         </li>
         <li data-start="2939" data-end="3156">
+            <p data-start="2941" data-end="3156"><strong data-start="2941" data-end="2976">Promo&ccedil;&atilde;o do Di&aacute;logo Construtivo</strong>: Moderadores devem sempre incentivar um <strong data-start="3017" data-end="3040">ambiente de di&aacute;logo</strong> saud&aacute;vel e colaborativo, gerenciando conflitos de maneira pac&iacute;fica e ajudando a resolver disputas de maneira justa.</p>
+        </li>
+        <li data-start="3157" data-end="3381">
+            <p data-start="3159" data-end="3381"><strong data-start="3159" data-end="3190">Atualiza&ccedil;&atilde;o de Conhecimento</strong>: Moderadores devem se manter <strong data-start="3220" data-end="3235">atualizados</strong> sobre mudan&ccedil;as nas pol&iacute;ticas, diretrizes e ferramentas da plataforma, bem como sobre boas pr&aacute;ticas de modera&ccedil;&atilde;o e din&acirc;mica de comunidades online.</p>
+        </li>
+    </ul>
+    <h3 data-start="3383" data-end="3412"><strong data-start="3387" data-end="3412">5. C&oacute;digos de Conduta</strong></h3>
+    <ul data-start="3413" data-end="4303">
+        <li data-start="3413" data-end="3634">
+            <p data-start="3415" data-end="3634"><strong data-start="3415" data-end="3445">Comportamento Profissional</strong>: Moderadores devem se comportar de maneira <strong data-start="3489" data-end="3513">profissional e &eacute;tica</strong> em todas as intera&ccedil;&otilde;es, nunca tomando a&ccedil;&otilde;es pessoais ou impulsivas. Devem ser <strong data-start="3592" data-end="3615">exemplos de conduta</strong> para a comunidade.</p>
+        </li>
+        <li data-start="3635" data-end="3859">
+            <p data-start="3637" data-end="3859"><strong data-start="3637" data-end="3666">Neutralidade nas Decis&otilde;es</strong>: As decis&otilde;es de modera&ccedil;&atilde;o devem ser sempre <strong data-start="3710" data-end="3721">neutras</strong> e <strong data-start="3724" data-end="3745">baseadas em fatos</strong>, sem influ&ecirc;ncias de ideologias pessoais ou press&otilde;es externas. Os moderadores devem ser <strong data-start="3833" data-end="3858">justos e consistentes</strong>.</p>
+        </li>
+        <li data-start="3860" data-end="4050">
+            <p data-start="3862" data-end="4050"><strong data-start="3862" data-end="3895">Evitar Conflitos de Interesse</strong>: Moderadores n&atilde;o devem tomar decis&otilde;es em quest&otilde;es nas quais tenham um <strong data-start="3966" data-end="3994">interesse pessoal direto</strong> ou em casos em que possam ser vistos como <strong data-start="4037" data-end="4049">parciais</strong>.</p>
+        </li>
+        <li data-start="4051" data-end="4303">
+            <p data-start="4053" data-end="4303"><strong data-start="4053" data-end="4084">Comunica&ccedil;&atilde;o Clara e Educada</strong>: Ao aplicar medidas de modera&ccedil;&atilde;o, como advert&ecirc;ncias ou bloqueios, os moderadores devem ser <strong data-start="4176" data-end="4197">claros e educados</strong>, explicando as raz&otilde;es por tr&aacute;s da a&ccedil;&atilde;o, para que o usu&aacute;rio compreenda e tenha a oportunidade de melhorar.</p>
+        </li>
+    </ul>
+    <h3 data-start="4305" data-end="4338"><strong data-start="4309" data-end="4338">6. Processos de Modera&ccedil;&atilde;o</strong></h3>
+    <ul data-start="4339" data-end="5280">
+        <li data-start="4339" data-end="4596">
+            <p data-start="4341" data-end="4596"><strong data-start="4341" data-end="4368">Advert&ecirc;ncias e Puni&ccedil;&otilde;es</strong>: Para infra&ccedil;&otilde;es menores, o moderador pode aplicar <strong data-start="4419" data-end="4435">advert&ecirc;ncias</strong> ou orienta&ccedil;&otilde;es claras sobre o comportamento esperado. Infra&ccedil;&otilde;es mais graves podem resultar em <strong data-start="4530" data-end="4570">bloqueios tempor&aacute;rios ou permanentes</strong>, dependendo da gravidade.</p>
+        </li>
+        <li data-start="4597" data-end="4817">
+            <p data-start="4599" data-end="4817"><strong data-start="4599" data-end="4625">Justifica&ccedil;&atilde;o das A&ccedil;&otilde;es</strong>: Sempre que uma a&ccedil;&atilde;o de modera&ccedil;&atilde;o for realizada (remo&ccedil;&atilde;o de conte&uacute;do, bloqueio, etc.), o moderador deve fornecer uma <strong data-start="4743" data-end="4766">justificativa clara</strong> para a decis&atilde;o, que ser&aacute; vis&iacute;vel para os usu&aacute;rios.</p>
+        </li>
+        <li data-start="4818" data-end="5027">
+            <p data-start="4820" data-end="5027"><strong data-start="4820" data-end="4844">Discuss&atilde;o e Feedback</strong>: Caso um usu&aacute;rio questione ou conteste uma decis&atilde;o de modera&ccedil;&atilde;o, o moderador deve estar disposto a <strong data-start="4944" data-end="4976">dialogar e revisar a decis&atilde;o</strong>, desde que haja argumentos v&aacute;lidos e construtivos.</p>
+        </li>
+        <li data-start="5028" data-end="5280">
+            <p data-start="5030" data-end="5280"><strong data-start="5030" data-end="5061">Escalabilidade de Problemas</strong>: Em casos complexos ou disputas s&eacute;rias, o moderador deve saber quando <strong data-start="5132" data-end="5177">escalar o problema para um n&iacute;vel superior</strong> (outros moderadores ou admininstradores), a fim de garantir uma decis&atilde;o mais imparcial e fundamentada.</p>
+        </li>
+    </ul>
+    <h3 data-start="5282" data-end="5321"><strong data-start="5286" data-end="5321">7. Proibi&ccedil;&atilde;o de Abusos de Poder</strong></h3>
+    <ul data-start="5322" data-end="6017">
+        <li data-start="5322" data-end="5596">
+            <p data-start="5324" data-end="5596"><strong data-start="5324" data-end="5357">Evitar Intimida&ccedil;&atilde;o ou Amea&ccedil;as</strong>: Moderadores n&atilde;o devem usar sua posi&ccedil;&atilde;o para <strong data-start="5403" data-end="5435">intimidar, amea&ccedil;ar ou coagir</strong> outros usu&aacute;rios. A modera&ccedil;&atilde;o deve sempre ser voltada para <strong data-start="5494" data-end="5553">a preserva&ccedil;&atilde;o do ambiente de aprendizagem e colabora&ccedil;&atilde;o</strong>, nunca para <strong data-start="5566" data-end="5595">ganho pessoal ou vingan&ccedil;a</strong>.</p>
+        </li>
+        <li data-start="5597" data-end="5771">
+            <p data-start="5599" data-end="5771"><strong data-start="5599" data-end="5630">Imparcialidade nas Rela&ccedil;&otilde;es</strong>: Moderadores devem <strong data-start="5650" data-end="5673">evitar favoritismos</strong> ou decis&otilde;es baseadas em <strong data-start="5698" data-end="5719">rela&ccedil;&otilde;es pessoais</strong>, tratando todos os usu&aacute;rios de forma igual e justa.</p>
+        </li>
+        <li data-start="5772" data-end="6017">
+            <p data-start="5774" data-end="6017"><strong data-start="5774" data-end="5832">N&atilde;o Usar o Poder de Modera&ccedil;&atilde;o para Prop&oacute;sitos Pessoais</strong>: Moderadores n&atilde;o devem usar suas fun&ccedil;&otilde;es para <strong data-start="5879" data-end="5911">censurar opini&otilde;es contr&aacute;rias</strong> ou para prejudicar pessoas que discordem de sua vis&atilde;o, especialmente em debates ideol&oacute;gicos ou pol&iacute;ticos.</p>
+        </li>
+    </ul>
+    <hr data-start="6019" data-end="6022" />
+    <h3 data-start="6024" data-end="6073"><strong data-start="6028" data-end="6073">8. Consequ&ecirc;ncias para Viola&ccedil;&atilde;o das Regras</strong></h3>
+    <ul data-start="6074" data-end="6698">
+        <li data-start="6074" data-end="6271">
+            <p data-start="6076" data-end="6271"><strong data-start="6076" data-end="6106">Advert&ecirc;ncias e Treinamento</strong>: Moderadores que violarem as regras podem ser advertidos e, se necess&aacute;rio, enviados para <strong data-start="6196" data-end="6221">treinamento adicional</strong> sobre as diretrizes e boas pr&aacute;ticas de modera&ccedil;&atilde;o.</p>
+        </li>
+        <li data-start="6272" data-end="6487">
+            <p data-start="6274" data-end="6487"><strong data-start="6274" data-end="6298">Suspens&atilde;o ou Remo&ccedil;&atilde;o</strong>: Moderadores que persistirem em comportamentos impr&oacute;prios ou que causem danos significativos &agrave; comunidade poder&atilde;o ser <strong data-start="6417" data-end="6446">suspensos temporariamente</strong> ou <strong data-start="6450" data-end="6473">removidos da fun&ccedil;&atilde;o</strong> de modera&ccedil;&atilde;o.</p>
+        </li>
+        <li data-start="6488" data-end="6698">
+            <p data-start="6490" data-end="6698"><strong data-start="6490" data-end="6512">Revis&atilde;o e Feedback</strong>: Casos mais complexos ser&atilde;o revistos por um grupo de moderadores s&ecirc;niores ou administradores para garantir que todas as decis&otilde;es estejam em conformidade com as normas e valores da WZZM.</p>
+        </li>
+    </ul>
+</body>
+</html>
