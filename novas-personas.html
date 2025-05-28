@@ -1,1 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Personas Criadas</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            padding: 20px;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column; /* Coloca os itens em coluna */
+            align-items: center; /* Centraliza horizontalmente */
+            min-height: 100vh;
+            margin: 0; /* Remove margem padrão do body */
+        }
+        .container {
+            max-width: 900px; /* Aumenta a largura para a listagem */
+            width: 100%;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            box-sizing: border-box; /* Inclui padding e border na largura/altura */
+        }
+        h2 {
+            color: #3F51B5;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+        }
+        #personasList {
+            display: grid; /* Usa grid para organizar os cartões */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Colunas responsivas */
+            gap: 20px; /* Espaço entre os cartões */
+            padding: 20px 0;
+        }
+        .persona-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden; /* Garante que a imagem não vaze */
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease-in-out; /* Efeito de hover */
+        }
+        .persona-card:hover {
+            transform: translateY(-5px); /* Levanta o cartão no hover */
+        }
+        .persona-card img {
+            width: 100%; /* Imagem ocupa 100% da largura do cartão */
+            height: 200px; /* Altura fixa para a imagem */
+            object-fit: cover; /* Corta a imagem para preencher o espaço */
+            border-bottom: 1px solid #eee; /* Linha sutil abaixo da imagem */
+        }
+        .persona-card-content {
+            padding: 15px;
+            flex-grow: 1; /* Permite que o conteúdo cresça e ocupe o espaço disponível */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Distribui o espaço entre os elementos */
+        }
+        .persona-card h3 {
+            font-size: 1.4em;
+            color: #3F51B5;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .persona-card p {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 10px;
+            text-align: left;
+            overflow: hidden; /* Esconde o texto que excede a altura */
+            text-overflow: ellipsis; /* Adiciona reticências (...) */
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* Limita a 3 linhas */
+            -webkit-box-orient: vertical;
+        }
+        .persona-card .author-info {
+            font-size: 0.8em;
+            color: #777;
+            margin-top: auto; /* Empurra para o final do card */
+            text-align: right;
+        }
+        .persona-card .mdl-button {
+            margin-top: 15px;
+            width: auto; /* Ajusta a largura do botão */
+            align-self: center; /* Centraliza o botão dentro do flex container */
+        }
+        #loadingMessage, #errorMessage, #noPersonasMessage, #loginMessage {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.1em;
+            color: #555;
+        }
+        #errorMessage {
+            color: #F44336;
+        }
+        #loginMessage {
+            color: #FF9800; /* Laranja para mensagem de login */
+        }
 
+        /* Responsividade para telas menores */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            #personasList {
+                grid-template-columns: 1fr; /* Uma coluna em telas menores */
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Personas Criadas</h2>
+        <div id="loadingMessage">Carregando personas...</div>
+        <div id="loginMessage" style="display: none;"></div>
+        <div id="errorMessage" style="display: none;"></div>
+        <div id="noPersonasMessage" style="display: none;">Nenhuma persona encontrada.</div>
+        <div id="personasList">
+            </div>
+    </div>
+
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-analytics-compat.js"></script>
+
+    <script>
+        // --- Configuração do Firebase (Substitua pelos seus dados reais do projeto) ---
+        // Estes valores devem ser obtidos do seu Firebase Console
+        const firebaseConfig = {
+            apiKey: "AIzaSyB9GkSqTIZ0kbVsba_WOdQeVAETrF9qna0",
+            authDomain: "wzzm-ce3fc.firebaseapp.com",
+            projectId: "wzzm-ce3fc",
+            storageBucket: "wzzm-ce3fc.appspot.com",
+            messagingSenderId: "249427877153",
+            appId: "1:249427877153:web:0e4297294794a5aadeb260",
+            measurementId: "G-PLKNZNFCQ8"
+        };
+
+        // Inicializa o Firebase se ainda não foi inicializado
+        let app;
+        if (firebase.apps.length === 0) {
+            app = firebase.initializeApp(firebaseConfig);
+        } else {
+            app = firebase.app();
+        }
+        const auth = firebase.auth();
+        const firestore = firebase.firestore();
+        const analytics = firebase.analytics();
+
+        // Elementos da UI
+        const personasListDiv = document.getElementById('personasList');
+        const loadingMessage = document.getElementById('loadingMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const noPersonasMessage = document.getElementById('noPersonasMessage');
+        const loginMessage = document.getElementById('loginMessage');
+
+        // Função para exibir mensagens
+        function showMessage(element, message, type = '') {
+            loadingMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            noPersonasMessage.style.display = 'none';
+            loginMessage.style.display = 'none';
+
+            element.textContent = message;
+            element.className = type; // Adiciona classe para estilo (success, error, etc.)
+            element.style.display = 'block';
+        }
+
+        // Função para carregar e exibir as personas
+        async function loadPersonas() {
+            personasListDiv.innerHTML = ''; // Limpa a lista antes de carregar
+            showMessage(loadingMessage, 'Carregando personas...'); // Mostra mensagem de carregamento
+
+            try {
+                // Busca todos os documentos na coleção 'minhapersona'
+                const snapshot = await firestore.collection('minhapersona').get();
+
+                if (snapshot.empty) {
+                    showMessage(noPersonasMessage, 'Nenhuma persona encontrada.');
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    const persona = doc.data();
+                    const card = document.createElement('div');
+                    card.className = 'persona-card mdl-card mdl-shadow--2dp'; // Classes MDL para o cartão
+
+                    // Fallback para imagem caso o link esteja vazio ou quebre
+                    const imageUrl = persona.linkFotoURL && persona.linkFotoURL.startsWith('http')
+                        ? persona.linkFotoURL
+                        : 'https://placehold.co/400x200/cccccc/333333?text=Sem+Foto'; // Imagem placeholder
+
+                    card.innerHTML = `
+                        <img src="${imageUrl}" alt="Foto da Persona ${persona.tituloPersona}" onerror="this.onerror=null;this.src='https://placehold.co/400x200/cccccc/333333?text=Erro+ao+Carregar';">
+                        <div class="persona-card-content">
+                            <h3>${persona.tituloPersona}</h3>
+                            <p>${persona.historiaPersona}</p>
+                            <div class="author-info">Criado por: ${persona.nomeCompleto || 'Desconhecido'} (${persona.nomeFantasia || 'N/A'})</div>
+                            ${persona.linkSecundario ? `<a href="${persona.linkSecundario}" target="_blank" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Ver Mais</a>` : ''}
+                        </div>
+                    `;
+                    personasListDiv.appendChild(card);
+                });
+
+                // Esconde todas as mensagens de status após o carregamento bem-sucedido
+                loadingMessage.style.display = 'none';
+                errorMessage.style.display = 'none';
+                noPersonasMessage.style.display = 'none';
+                loginMessage.style.display = 'none';
+
+                // Atualiza os componentes MDL dinamicamente adicionados
+                if (componentHandler) {
+                    componentHandler.upgradeElements(personasListDiv);
+                }
+
+            } catch (error) {
+                console.error("Erro ao carregar personas:", error);
+                showMessage(errorMessage, `Erro ao carregar personas: ${error.message}`);
+            }
+        }
+
+        // Verifica o estado de autenticação do usuário
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                // Usuário logado
+                // Verifica se o provedor de autenticação é o Google
+                const isGoogleUser = user.providerData.some(provider => provider.providerId === 'google.com');
+
+                if (isGoogleUser) {
+                    // Se logado com Google, carrega as personas
+                    showMessage(loadingMessage, 'Carregando personas...'); // Mensagem de carregamento inicial
+                    loadPersonas();
+                } else {
+                    // Se logado, mas não com Google
+                    showMessage(loginMessage, 'Você está logado, mas apenas personas de usuários Google podem ser visualizadas aqui.');
+                    personasListDiv.innerHTML = ''; // Limpa a lista
+                }
+            } else {
+                // Usuário não logado
+                showMessage(loginMessage, 'Por favor, faça login com sua conta Google para visualizar as personas.');
+                personasListDiv.innerHTML = ''; // Limpa a lista
+            }
+        });
+
+        // Inicializa os componentes MDL após o carregamento do DOM
+        document.addEventListener('DOMContentLoaded', () => {
+            if (componentHandler) {
+                componentHandler.upgradeDom();
+            }
+        });
+    </script>
+</body>
+</html>
