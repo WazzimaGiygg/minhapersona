@@ -168,67 +168,50 @@
 
         // Handle form submission
         articleForm.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Prevent default form submission
-
-            if (!currentUser) {
-                messageDisplay.textContent = "Erro: Usuário não logado. Por favor, faça login.";
-                messageDisplay.className = 'error';
-                return;
-            }
-
-            const articleData = {
-                title: articleTitleInput.value,
-                history: articleHistoryInput.value,
-                secondaryLink: secondaryLinkInput.value,
-                photoLink: photoLinkInput.value,
-                authorId: currentUser.uid, // Link article to user's UID
-                authorName: currentUser.displayName || (userNameInput.value || 'Anônimo'), // Prefer display name, then user input
-                authorFantasyName: userFantasyNameInput.value || null, // Optional fantasy name
-                createdAt: firebase.firestore.FieldValue.serverTimestamp() // Timestamp for creation
+        // Objeto com os dados da persona a serem salvos
+            const personaData = {
+                authorId: currentUser.uid, // UID do usuário logado
+                // Campos do perfil do usuário (nome completo e nome de fantasia)
+                nomeCompleto: userNameInput.value,
+                nomeFantasia: userFantasyNameInput.value || null,
+                // Campos específicos da persona
+                tituloPersona: articleTitleInput.value, // Corrigido de 'title'
+                historiaPersona: articleHistoryInput.value, // Corrigido de 'history'
+                linkSecundario: secondaryLinkInput.value || null, // Corrigido de 'secondaryLink'
+                linkFotoURL: photoLinkInput.value, // Corrigido de 'photoLink'
+                createdAt: firebase.firestore.FieldValue.serverTimestamp() // Timestamp de criação
             };
+    e.preventDefault(); // Prevent default form submission
 
-            // First, check/update user profile (if required)
-            try {
-                const userProfileRef = firestore.collection('users').doc(currentUser.uid);
-                const doc = await userProfileRef.get();
+    if (!currentUser) {
+        messageDisplay.textContent = "Erro: Usuário não logado. Por favor, faça login.";
+        messageDisplay.className = 'error';
+        return;
+    }
 
-                if (!doc.exists || !doc.data().nome) { // If profile doesn't exist or name is missing
-                    if (!userNameInput.value) {
-                        messageDisplay.textContent = "Por favor, forneça seu nome completo para completar seu perfil.";
-                        messageDisplay.className = 'error';
-                        return;
-                    }
-                    await userProfileRef.set({
-                        nome: userNameInput.value,
-                        nomeFantasia: userFantasyNameInput.value,
-                        email: currentUser.email, // Store email for record
-                        googleId: currentUser.providerData.find(p => p.providerId === 'google.com')?.uid || null,
-                        githubId: currentUser.providerData.find(p => p.providerId === 'github.com')?.uid || null,
-                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-                    }, { merge: true }); // Use merge to update existing fields without overwriting
-                    console.log("Perfil do usuário atualizado/criado com sucesso.");
-                } else {
-                    // Update last login timestamp even if profile exists
-                    await userProfileRef.update({
-                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                }
+    const articleData = {
+        authorId: currentUser.uid, // UID do usuário logado
+        authorName: currentUser.displayName || (userNameInput.value || 'Anônimo'), // Preferir nome de exibição, depois input do usuário
+        authorFantasyName: userFantasyNameInput.value || null,
+        title: articleTitleInput.value,
+        history: articleHistoryInput.value,
+        secondaryLink: secondaryLinkInput.value,
+        photoLink: photoLinkInput.value,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp() // Timestamp de criação
+    };
 
-                // Then, save the article
-                await firestore.collection('articles').add(articleData);
-                messageDisplay.textContent = "Artigo enviado com sucesso!";
-                messageDisplay.className = 'success';
-                articleForm.reset(); // Clear the form
-                // Hide profile fields again if they were just submitted
-                profileFieldsDiv.style.display = 'none';
-                userNameInput.removeAttribute('required');
-
-            } catch (error) {
-                console.error("Erro ao enviar artigo ou atualizar perfil:", error);
-                messageDisplay.textContent = `Erro ao enviar artigo: ${error.message}`;
-                messageDisplay.className = 'error';
-            }
-        });
+    try {
+        // Salvar o artigo na coleção "minhapersona"
+        await firestore.collection('minhapersona').add(articleData);
+        messageDisplay.textContent = "Artigo enviado com sucesso!";
+        messageDisplay.className = 'success';
+        articleForm.reset(); // Limpar o formulário
+    } catch (error) {
+        console.error("Erro ao enviar artigo:", error);
+        messageDisplay.textContent = `Erro ao enviar artigo: ${error.message}`;
+        messageDisplay.className = 'error';
+    }
+});
 
         // Initialize MDL components after the DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
