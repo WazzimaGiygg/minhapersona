@@ -13,20 +13,20 @@
             padding: 20px;
             background-color: #f0f0f0;
             display: flex;
-            flex-direction: column; /* Coloca os itens em coluna */
-            align-items: center; /* Centraliza horizontalmente */
+            flex-direction: column;
+            align-items: center;
             min-height: 100vh;
-            margin: 0; /* Remove margem padrão do body */
+            margin: 0;
         }
         .container {
-            max-width: 900px; /* Aumenta a largura para a listagem */
+            max-width: 900px;
             width: 100%;
             background-color: #ffffff;
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
-            box-sizing: border-box; /* Inclui padding e border na largura/altura */
+            box-sizing: border-box;
         }
         h2 {
             color: #3F51B5;
@@ -35,36 +35,36 @@
             font-size: 1.8em;
         }
         #personasList {
-            display: grid; /* Usa grid para organizar os cartões */
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Colunas responsivas */
-            gap: 20px; /* Espaço entre os cartões */
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
             padding: 20px 0;
         }
         .persona-card {
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            overflow: hidden; /* Garante que a imagem não vaze */
+            overflow: hidden;
             text-align: center;
             display: flex;
             flex-direction: column;
-            transition: transform 0.2s ease-in-out; /* Efeito de hover */
+            transition: transform 0.2s ease-in-out;
         }
         .persona-card:hover {
-            transform: translateY(-5px); /* Levanta o cartão no hover */
+            transform: translateY(-5px);
         }
         .persona-card img {
-            width: 100%; /* Imagem ocupa 100% da largura do cartão */
-            height: 200px; /* Altura fixa para a imagem */
-            object-fit: cover; /* Corta a imagem para preencher o espaço */
-            border-bottom: 1px solid #eee; /* Linha sutil abaixo da imagem */
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
         }
         .persona-card-content {
             padding: 15px;
-            flex-grow: 1; /* Permite que o conteúdo cresça e ocupe o espaço disponível */
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* Distribui o espaço entre os elementos */
+            justify-content: space-between;
         }
         .persona-card h3 {
             font-size: 1.4em;
@@ -77,22 +77,22 @@
             color: #555;
             margin-bottom: 10px;
             text-align: left;
-            overflow: hidden; /* Esconde o texto que excede a altura */
-            text-overflow: ellipsis; /* Adiciona reticências (...) */
+            overflow: hidden;
+            text-overflow: ellipsis;
             display: -webkit-box;
-            -webkit-line-clamp: 3; /* Limita a 3 linhas */
+            -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
         }
         .persona-card .author-info {
             font-size: 0.8em;
             color: #777;
-            margin-top: auto; /* Empurra para o final do card */
+            margin-top: auto;
             text-align: right;
         }
         .persona-card .mdl-button {
             margin-top: 15px;
-            width: auto; /* Ajusta a largura do botão */
-            align-self: center; /* Centraliza o botão dentro do flex container */
+            width: auto;
+            align-self: center;
         }
         #loadingMessage, #errorMessage, #noPersonasMessage, #loginMessage {
             text-align: center;
@@ -104,16 +104,15 @@
             color: #F44336;
         }
         #loginMessage {
-            color: #FF9800; /* Laranja para mensagem de login */
+            color: #FF9800;
         }
 
-        /* Responsividade para telas menores */
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
             }
             #personasList {
-                grid-template-columns: 1fr; /* Uma coluna em telas menores */
+                grid-template-columns: 1fr;
                 padding: 0;
             }
         }
@@ -137,8 +136,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-analytics-compat.js"></script>
 
     <script>
-        // --- Configuração do Firebase (Substitua pelos seus dados reais do projeto) ---
-        // Estes valores devem ser obtidos do seu Firebase Console
         const firebaseConfig = {
             apiKey: "AIzaSyB9GkSqTIZ0kbVsba_WOdQeVAETrF9qna0",
             authDomain: "wzzm-ce3fc.firebaseapp.com",
@@ -149,7 +146,6 @@
             measurementId: "G-PLKNZNFCQ8"
         };
 
-        // Inicializa o Firebase se ainda não foi inicializado
         let app;
         if (firebase.apps.length === 0) {
             app = firebase.initializeApp(firebaseConfig);
@@ -160,14 +156,12 @@
         const firestore = firebase.firestore();
         const analytics = firebase.analytics();
 
-        // Elementos da UI
         const personasListDiv = document.getElementById('personasList');
         const loadingMessage = document.getElementById('loadingMessage');
         const errorMessage = document.getElementById('errorMessage');
         const noPersonasMessage = document.getElementById('noPersonasMessage');
         const loginMessage = document.getElementById('loginMessage');
 
-        // Função para exibir mensagens
         function showMessage(element, message, type = '') {
             loadingMessage.style.display = 'none';
             errorMessage.style.display = 'none';
@@ -175,54 +169,66 @@
             loginMessage.style.display = 'none';
 
             element.textContent = message;
-            element.className = type; // Adiciona classe para estilo (success, error, etc.)
+            element.className = type;
             element.style.display = 'block';
         }
 
-        // Função para carregar e exibir as personas
         async function loadPersonas() {
-            personasListDiv.innerHTML = ''; // Limpa a lista antes de carregar
-            showMessage(loadingMessage, 'Carregando personas...'); // Mostra mensagem de carregamento
+            personasListDiv.innerHTML = '';
+            showMessage(loadingMessage, 'Carregando personas...');
 
             try {
-                // Busca todos os documentos na coleção 'minhapersona'
+                console.log("Tentando buscar documentos da coleção 'minhapersona'...");
                 const snapshot = await firestore.collection('minhapersona').get();
+                console.log("Snapshot do Firestore obtido.");
 
                 if (snapshot.empty) {
+                    console.log("Nenhuma persona encontrada na coleção.");
                     showMessage(noPersonasMessage, 'Nenhuma persona encontrada.');
                     return;
                 }
 
+                console.log(`Número de documentos encontrados: ${snapshot.size}`);
                 snapshot.forEach(doc => {
                     const persona = doc.data();
-                    const card = document.createElement('div');
-                    card.className = 'persona-card mdl-card mdl-shadow--2dp'; // Classes MDL para o cartão
+                    console.log("Processando documento:", doc.id, persona);
 
-                    // Fallback para imagem caso o link esteja vazio ou quebre
-                    const imageUrl = persona.linkFotoURL && persona.linkFotoURL.startsWith('http')
-                        ? persona.linkFotoURL
-                        : 'https://placehold.co/400x200/cccccc/333333?text=Sem+Foto'; // Imagem placeholder
+                    const titulo = persona.tituloPersona || persona.title || 'Título Indefinido';
+                    const historia = persona.historiaPersona || persona.history || 'História Indefinida';
+                    const nomeCompletoAutor = persona.nomeCompleto || persona.authorName || 'Desconhecido';
+                    const nomeFantasiaAutor = persona.nomeFantasia || persona.authorFantasyName || 'N/A';
+                    const linkFoto = persona.linkFotoURL || persona.photoLink;
+                    const linkSecundario = persona.linkSecundario || persona.secondaryLink;
+
+                    console.log("Dados usados para o card:", { titulo, historia, nomeCompletoAutor, nomeFantasiaAutor, linkFoto, linkSecundario });
+
+                    const imageUrl = linkFoto && linkFoto.startsWith('http')
+                        ? linkFoto
+                        : 'https://placehold.co/400x200/cccccc/333333?text=Sem+Foto';
+
+                    const card = document.createElement('div');
+                    card.className = 'persona-card mdl-card mdl-shadow--2dp';
 
                     card.innerHTML = `
-                        <img src="${imageUrl}" alt="Foto da Persona ${persona.tituloPersona}" onerror="this.onerror=null;this.src='https://placehold.co/400x200/cccccc/333333?text=Erro+ao+Carregar';">
+                        <img src="${imageUrl}" alt="Foto da Persona ${titulo}" onerror="this.onerror=null;this.src='https://placehold.co/400x200/cccccc/333333?text=Erro+ao+Carregar';">
                         <div class="persona-card-content">
-                            <h3>${persona.tituloPersona}</h3>
-                            <p>${persona.historiaPersona}</p>
-                            <div class="author-info">Criado por: ${persona.nomeCompleto || 'Desconhecido'} (${persona.nomeFantasia || 'N/A'})</div>
-                            ${persona.linkSecundario ? `<a href="${persona.linkSecundario}" target="_blank" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Ver Mais</a>` : ''}
+                            <h3>${titulo}</h3>
+                            <p>${historia}</p>
+                            <div class="author-info">Criado por: ${nomeCompletoAutor} (${nomeFantasiaAutor})</div>
+                            ${linkSecundario ? `<a href="${linkSecundario}" target="_blank" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Ver Mais</a>` : ''}
                         </div>
                     `;
                     personasListDiv.appendChild(card);
+                    console.log("Card adicionado ao DOM para:", titulo);
                 });
 
-                // Esconde todas as mensagens de status após o carregamento bem-sucedido
                 loadingMessage.style.display = 'none';
                 errorMessage.style.display = 'none';
                 noPersonasMessage.style.display = 'none';
                 loginMessage.style.display = 'none';
 
-                // Atualiza os componentes MDL dinamicamente adicionados
                 if (componentHandler) {
+                    console.log("Atualizando componentes MDL.");
                     componentHandler.upgradeElements(personasListDiv);
                 }
 
@@ -232,31 +238,29 @@
             }
         }
 
-        // Verifica o estado de autenticação do usuário
         auth.onAuthStateChanged(async (user) => {
             if (user) {
-                // Usuário logado
-                // Verifica se o provedor de autenticação é o Google
+                console.log("Estado de autenticação: Usuário logado.");
+                console.log("Dados do usuário:", user);
                 const isGoogleUser = user.providerData.some(provider => provider.providerId === 'google.com');
+                console.log("É usuário Google?", isGoogleUser);
 
                 if (isGoogleUser) {
-                    // Se logado com Google, carrega as personas
-                    showMessage(loadingMessage, 'Carregando personas...'); // Mensagem de carregamento inicial
+                    showMessage(loadingMessage, 'Carregando personas...');
                     loadPersonas();
                 } else {
-                    // Se logado, mas não com Google
                     showMessage(loginMessage, 'Você está logado, mas apenas personas de usuários Google podem ser visualizadas aqui.');
-                    personasListDiv.innerHTML = ''; // Limpa a lista
+                    personasListDiv.innerHTML = '';
                 }
             } else {
-                // Usuário não logado
+                console.log("Estado de autenticação: Usuário NÃO logado.");
                 showMessage(loginMessage, 'Por favor, faça login com sua conta Google para visualizar as personas.');
-                personasListDiv.innerHTML = ''; // Limpa a lista
+                personasListDiv.innerHTML = '';
             }
         });
 
-        // Inicializa os componentes MDL após o carregamento do DOM
         document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOM Content Loaded. Tentando atualizar MDL.");
             if (componentHandler) {
                 componentHandler.upgradeDom();
             }
