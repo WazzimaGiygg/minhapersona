@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório da Coleção Minhapersona</title>
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.blue-indigo.min.css" />
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <style>
+        body { font-family: 'Roboto', sans-serif; background: #f5f5f5; }
+        .mdl-layout-title { color: #fff; }
+        .page-content { display: flex; max-width: 1200px; margin: 20px auto; gap: 20px; }
+        #list-container { flex: 1; min-width: 300px; max-width: 400px; background: #fff; border-radius: 8px; box-shadow: 0 2px 2px 0 rgba(0,0,0,.14); }
+        #detail-container { flex: 2; background: #fff; border-radius: 8px; box-shadow: 0 2px 2px 0 rgba(0,0,0,.14); padding: 20px; }
+        #loading { text-align: center; padding: 20px; }
+        h1, h2 { color: #333; }
+        #persona-list { list-style-type: none; padding: 0; margin: 0; }
+        .persona-item { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; transition: background-color 0.2s ease; }
+        .persona-item:hover, .persona-item.active { background-color: #e0e0e0; }
+        #detail-content { display: none; }
+        #detail-content img { max-width: 100%; height: auto; border-radius: 8px; margin-top: 15px; }
+        .mdl-list__item-text-body strong { color: #3f51b5; }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<div class="mdl-layout mdl-js-layout">
+    <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+            <span class="mdl-layout-title">Relatório da Coleção Minhapersona</span>
+        </div>
+    </header>
+    <main class="mdl-layout__content">
+        <div class="page-content">
+            <div id="list-container">
+                <h4 style="padding: 15px;">Personas Registradas</h4>
+                <div id="loading" class="mdl-spinner mdl-js-spinner is-active"></div>
+                <ul id="persona-list" class="mdl-list"></ul>
+            </div>
+
+            <div id="detail-container">
+                <div id="initial-message">
+                    <h3>Selecione uma Persona na lista ao lado para ver os detalhes.</h3>
+                </div>
+                <div id="detail-content" style="display:none;">
+                    <h3 id="persona-title"></h3>
+                    <p><strong>Autor:</strong> <span id="persona-author"></span></p>
+                    <p><strong>UID do Autor:</strong> <span id="persona-author-id"></span></p>
+                    <p><strong>Criado em:</strong> <span id="persona-created-at"></span></p>
+                    <h4>História:</h4>
+                    <div id="persona-history" style="white-space: pre-wrap;"></div>
+                    <p id="persona-photolink-text"><strong>Link da Foto:</strong> <a href="#" id="persona-photolink" target="_blank">Abrir</a></p>
+                    <img id="persona-photo" src="" alt="Foto da Persona" style="display:none;">
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    // --- Configuração do Firebase ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyB9GkSqTIZ0kbVsba_WOdQeVAETrF9qna0",
+        authDomain: "wzzm-ce3fc.firebaseapp.com",
+        projectId: "wzzm-ce3fc",
+        storageBucket: "wzzm-ce3fc.appspot.com",
+        messagingSenderId: "249427877153",
+        appId: "1:249427877153:web:0e4297294794a5aadeb260",
+        measurementId: "G-PLKNZNFCQ8"
+    };
+
+    // Inicialize o Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const personaListElement = document.getElementById('persona-list');
+    const loadingElement = document.getElementById('loading');
+    const initialMessageElement = document.getElementById('initial-message');
+    const detailContentElement = document.getElementById('detail-content');
+
+    // Mapeia o ID do documento para seus dados completos para acesso rápido
+    let personasData = {};
+
+    // Função para exibir os detalhes de uma persona
+    function displayPersonaDetails(personaId) {
+        const data = personasData[personaId];
+        if (!data) return;
+
+        document.getElementById('persona-title').innerText = data.title || 'N/A';
+        document.getElementById('persona-author').innerText = data.authorName || 'N/A';
+        document.getElementById('persona-author-id').innerText = data.authorId || 'N/A';
+        document.getElementById('persona-created-at').innerText = data.createdAt || 'N/A';
+        
+        // Exibir a história (history) com quebras de linha
+        document.getElementById('persona-history').innerText = data.history || 'N/A';
+
+        const photoLinkElement = document.getElementById('persona-photolink');
+        const photoElement = document.getElementById('persona-photo');
+        const photolinkTextElement = document.getElementById('persona-photolink-text');
+
+        if (data.photoLink) {
+            photoLinkElement.href = data.photoLink;
+            photoElement.src = data.photoLink;
+            photoElement.style.display = 'block';
+            photolinkTextElement.style.display = 'block';
+        } else {
+            photoLinkElement.href = '#';
+            photoElement.style.display = 'none';
+            photolinkTextElement.style.display = 'none';
+        }
+
+        initialMessageElement.style.display = 'none';
+        detailContentElement.style.display = 'block';
+
+        // Remover a classe 'active' de todos os itens e adicionar ao item clicado
+        document.querySelectorAll('.persona-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        document.querySelector(`.persona-item[data-id="${personaId}"]`).classList.add('active');
+    }
+
+    // Função para buscar e listar todas as personas
+    async function fetchPersonas() {
+        try {
+            const personasCollection = await db.collection('minhapersona').get();
+            loadingElement.style.display = 'none';
+            
+            if (personasCollection.empty) {
+                personaListElement.innerHTML = '<li style="padding: 15px;">Nenhuma persona encontrada.</li>';
+                return;
+            }
+
+            personasCollection.forEach(doc => {
+                const data = doc.data();
+                personasData[doc.id] = data; // Armazena os dados para acesso rápido
+
+                const listItem = document.createElement('li');
+                listItem.className = "mdl-list__item persona-item";
+                listItem.setAttribute('data-id', doc.id);
+                listItem.innerHTML = `<span class="mdl-list__item-primary-content">${data.title || 'Título não definido'}</span>`;
+                
+                listItem.addEventListener('click', () => {
+                    displayPersonaDetails(doc.id);
+                });
+                personaListElement.appendChild(listItem);
+            });
+
+            // Exibe os detalhes do primeiro item por padrão
+            if (personasCollection.docs.length > 0) {
+                displayPersonaDetails(personasCollection.docs[0].id);
+            }
+
+        } catch (error) {
+            console.error("Erro ao buscar dados da coleção 'minhapersona':", error);
+            loadingElement.innerText = "Erro ao carregar as personas. Verifique a autenticação e as permissões.";
+        }
+    }
+
+    // Autentica anonimamente e inicia a busca dos dados
+    async function init() {
+        try {
+            await firebase.auth().signInAnonymously();
+            console.log("Usuário autenticado anonimamente para ler a coleção minhapersona.");
+            fetchPersonas();
+        } catch (error) {
+            console.error("Erro na autenticação anônima:", error);
+            loadingElement.innerText = "Erro na autenticação. Não foi possível acessar os dados.";
+        }
+    }
+
+    // Inicie o processo quando a página carregar
+    window.onload = init;
+</script>
+
+</body>
+</html>
